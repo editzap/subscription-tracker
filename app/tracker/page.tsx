@@ -8,6 +8,12 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+} from "recharts";
 
 export default function Tracker() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -22,6 +28,13 @@ export default function Tracker() {
   useEffect(() => {
     const data = localStorage.getItem("subs");
     if (data) setSubs(JSON.parse(data));
+  }, []);
+
+  // 🔔 Request notification permission
+  useEffect(() => {
+    if ("Notification" in window) {
+      Notification.requestPermission();
+    }
   }, []);
 
   const save = (data: any[]) => {
@@ -67,34 +80,39 @@ export default function Tracker() {
     setEditId(s.id);
   };
 
-  const toggleUsage = (id: number) => {
-    save(subs.map((s) =>
-      s.id === id ? { ...s, used: !s.used } : s
-    ));
-  };
-
-  // 📊 TOTAL
-  const total = subs.reduce(
-    (t, s) => t + (s.cycle === "yearly" ? s.cost / 12 : s.cost),
-    0
-  );
-
-  // 🔔 REMINDER LOGIC
   const getDaysLeft = (date: string) => {
     const today = new Date();
     const next = new Date(date);
     return Math.ceil(
-      (next.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+      (next.getTime() - today.getTime()) /
+        (1000 * 60 * 60 * 24)
     );
   };
 
-  // 📊 CATEGORY ANALYTICS
+  // 🔔 Trigger notifications
+  useEffect(() => {
+    subs.forEach((s) => {
+      const days = getDaysLeft(s.date);
+
+      if (days === 0 && Notification.permission === "granted") {
+        new Notification(`${s.name} is due today 💸`);
+      }
+    });
+  }, [subs]);
+
+  // 📊 Category totals
   const categoryTotals: any = {};
   subs.forEach((s) => {
     const value = s.cycle === "yearly" ? s.cost / 12 : s.cost;
     categoryTotals[s.category] =
       (categoryTotals[s.category] || 0) + value;
   });
+
+  const chartData = Object.entries(categoryTotals).map(
+    ([name, value]) => ({ name, value })
+  );
+
+  const COLORS = ["#000", "#555", "#888", "#ccc"];
 
   const bg = dark ? "bg-black text-white" : "bg-white text-black";
   const card = dark ? "bg-gray-900 border-gray-700" : "bg-gray-100";
@@ -105,7 +123,6 @@ export default function Tracker() {
       {/* Top */}
       <div className="flex justify-between items-center max-w-3xl mx-auto mb-6">
         <h1 className="text-xl font-bold">SubTrack</h1>
-
         <button onClick={() => setDark(!dark)}>
           {dark ? <Sun size={18} /> : <Moon size={18} />}
         </button>
@@ -113,24 +130,23 @@ export default function Tracker() {
 
       <div className="max-w-3xl mx-auto">
 
-        {/* Total */}
-        <div className="text-center mb-6">
-          <h2 className="text-4xl font-bold">
-            ₹{total.toFixed(0)}
-          </h2>
-          <p className="text-sm opacity-60">Monthly Spend</p>
-        </div>
-
-        {/* 📊 Analytics */}
-        <div className="mb-6">
-          <h3 className="text-sm mb-2 opacity-70">Spending by Category</h3>
-          {Object.entries(categoryTotals).map(([cat, val]: any) => (
-            <div key={cat} className="text-sm flex justify-between">
-              <span>{cat}</span>
-              <span>₹{val.toFixed(0)}</span>
-            </div>
-          ))}
-        </div>
+        {/* 📊 Chart */}
+        {chartData.length > 0 && (
+          <div className="mb-6 flex justify-center">
+            <PieChart width={250} height={250}>
+              <Pie
+                data={chartData}
+                dataKey="value"
+                outerRadius={100}
+              >
+                {chartData.map((_, i) => (
+                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </div>
+        )}
 
         {/* Form */}
         <div className="flex flex-col gap-2 mb-6">
@@ -205,7 +221,6 @@ export default function Tracker() {
                       ₹{s.cost} • {s.category}
                     </p>
 
-                    {/* 🔔 Reminder */}
                     <p className="text-xs mt-1 text-yellow-500">
                       {days === 0
                         ? "Due today"
