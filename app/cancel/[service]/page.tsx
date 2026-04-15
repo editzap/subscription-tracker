@@ -4,11 +4,24 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
+// ✅ SEO METADATA (IMPORTANT)
+export async function generateMetadata({ params }: any) {
+  const service = params.service;
+
+  const formatted = service
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c: string) => c.toUpperCase());
+
+  return {
+    title: `How to Cancel ${formatted} Subscription (Step-by-Step)`,
+    description: `Learn how to cancel your ${formatted} subscription easily. Step-by-step guide to stop payments and save money.`,
+  };
+}
+
 export default function CancelPage({ params }: any) {
   const router = useRouter();
   const service = params.service;
 
-  // Format name
   const formatted = service
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
@@ -27,44 +40,40 @@ export default function CancelPage({ params }: any) {
 
       <div className="max-w-xl mx-auto">
 
-        {/* Header */}
+        {/* SEO Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
           <h1 className="text-3xl font-bold mb-2">
-            Cancel {formatted}
+            How to Cancel {formatted} Subscription
           </h1>
 
           <p className="text-gray-600">
-            Stop paying for something you don’t use.
-            This takes less than 2 minutes.
+            Step-by-step guide to cancel your {formatted} subscription,
+            stop recurring payments, and save money instantly.
           </p>
         </motion.div>
 
-        {/* Highlight Card */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="p-5 rounded-2xl border mb-8 bg-gray-50"
-        >
-          <p className="text-sm opacity-70 mb-1">
-            Potential savings
+        {/* Content Block (SEO TEXT) */}
+        <div className="mb-8 text-sm text-gray-700 leading-relaxed">
+          <p className="mb-3">
+            If you're looking to cancel your {formatted} subscription,
+            you're not alone. Many users forget about recurring payments
+            and end up spending money on services they no longer use.
           </p>
-          <p className="text-2xl font-semibold">
-            Save money every month 💸
+
+          <p>
+            This guide will help you quickly cancel your {formatted} account
+            and avoid future charges.
           </p>
-        </motion.div>
+        </div>
 
         {/* Steps */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-10"
-        >
+        <div className="mb-10">
           <h2 className="font-semibold mb-4">
-            Steps to cancel
+            Steps to cancel {formatted}
           </h2>
 
           <div className="space-y-4 text-sm">
@@ -82,14 +91,10 @@ export default function CancelPage({ params }: any) {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Actions */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex flex-col gap-3"
-        >
+        <div className="flex flex-col gap-3 mb-10">
           <button
             onClick={() =>
               window.open(
@@ -97,7 +102,7 @@ export default function CancelPage({ params }: any) {
                 "_blank"
               )
             }
-            className="flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl hover:scale-[1.02] transition"
+            className="flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl"
           >
             <ExternalLink size={16} />
             View detailed guide
@@ -105,17 +110,29 @@ export default function CancelPage({ params }: any) {
 
           <button
             onClick={() =>
-              alert("Coming soon: better alternatives")
+              alert("Coming soon: cheaper alternatives")
             }
-            className="border py-3 rounded-xl hover:bg-gray-100 transition"
+            className="border py-3 rounded-xl"
           >
             Find cheaper alternatives
           </button>
-        </motion.div>
+        </div>
 
-        {/* Footer */}
-        <div className="mt-12 text-xs text-gray-400 text-center">
-          Built to help you spend smarter.
+        {/* EXTRA SEO CONTENT */}
+        <div className="text-sm text-gray-600 leading-relaxed">
+          <h3 className="font-semibold mb-2">
+            Why cancel {formatted}?
+          </h3>
+
+          <p className="mb-3">
+            Subscriptions can add up quickly. If you're not actively using
+            {formatted}, canceling it can help you save money every month.
+          </p>
+
+          <p>
+            You can always resubscribe later if needed, so there’s no risk
+            in canceling unused services.
+          </p>
         </div>
 
       </div>
