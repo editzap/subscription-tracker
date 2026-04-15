@@ -1,94 +1,50 @@
-"use client";
-
-import Link from "next/link";
-import { motion } from "framer-motion";
-import Logo from "../components/Logo";
-import { useState } from "react";
-import { Moon, Sun } from "lucide-react";
-
 export default function Home() {
-  const [dark, setDark] = useState(false);
-
-  const bg = dark
-    ? "bg-black text-white"
-    : "bg-[#f9fafb] text-black";
-
-  const sub = dark ? "text-gray-400" : "text-gray-500";
-
   return (
-    <div className={`min-h-screen transition ${bg}`}>
-
-      {/* NAV */}
-      <div className="flex justify-between items-center px-6 py-5 max-w-6xl mx-auto">
-        <Logo />
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setDark(!dark)}
-            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
-          >
-            {dark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
-
-          <Link href="/tracker">
-            <button className="px-5 py-2 rounded-lg text-sm bg-black text-white dark:bg-white dark:text-black">
-              Open App
-            </button>
-          </Link>
-        </div>
-      </div>
+    <main className="min-h-screen bg-gradient-to-b from-white to-gray-100 text-gray-900">
 
       {/* HERO */}
-      <div className="text-center mt-32 px-6 max-w-4xl mx-auto">
-
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-6xl font-semibold leading-tight mb-6 tracking-tight"
-        >
-          Stop paying for
-          <br />
-          things you don’t use.
-        </motion.h1>
-
-        <p className={`text-lg ${sub} mb-10`}>
-          SubTrack helps you track subscriptions,
-          cut waste, and take control of your money.
+      <section className="max-w-6xl mx-auto px-6 py-20 text-center">
+        <h1 className="text-5xl font-bold mb-6">
+          Track every subscription.
+        </h1>
+        <p className="text-lg text-gray-600 mb-8">
+          Know where your money goes. Cancel what you don’t need.
         </p>
 
-        <Link href="/tracker">
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.97 }}
-            className="px-10 py-4 rounded-xl text-lg bg-black text-white dark:bg-white dark:text-black shadow-sm"
-          >
-            Start for free
-          </motion.button>
-        </Link>
-      </div>
+        <a
+          href="/tracker"
+          className="bg-black text-white px-6 py-3 rounded-xl text-lg hover:opacity-80 transition"
+        >
+          Get Started
+        </a>
+      </section>
 
-      {/* FEATURE CARDS */}
-      <div className="mt-36 grid md:grid-cols-3 gap-6 px-6 max-w-5xl mx-auto">
-        {[
-          ["Clarity", "All subscriptions in one place"],
-          ["Control", "Know exactly where money goes"],
-          ["Action", "Cancel and save instantly"],
-        ].map(([title, desc], i) => (
-          <motion.div
-            key={i}
-            whileHover={{ y: -6 }}
-            className="p-6 rounded-2xl bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition"
-          >
-            <h3 className="font-medium mb-2">{title}</h3>
-            <p className={`text-sm ${sub}`}>{desc}</p>
-          </motion.div>
-        ))}
-      </div>
+      {/* FEATURES */}
+      <section className="max-w-6xl mx-auto px-6 py-12 grid md:grid-cols-3 gap-6">
+        
+        <div className="p-6 bg-white rounded-2xl shadow">
+          <h3 className="font-semibold text-lg mb-2">Track Spending</h3>
+          <p className="text-gray-500">
+            See how much you spend every month on subscriptions.
+          </p>
+        </div>
 
-      {/* FOOTER */}
-      <div className={`mt-36 text-center text-sm pb-6 ${sub}`}>
-        SubTrack — built for clarity.
-      </div>
-    </div>
+        <div className="p-6 bg-white rounded-2xl shadow">
+          <h3 className="font-semibold text-lg mb-2">Cancel Easily</h3>
+          <p className="text-gray-500">
+            Guides to cancel Netflix, Spotify, and more.
+          </p>
+        </div>
+
+        <div className="p-6 bg-white rounded-2xl shadow">
+          <h3 className="font-semibold text-lg mb-2">Stay in Control</h3>
+          <p className="text-gray-500">
+            Never forget recurring payments again.
+          </p>
+        </div>
+
+      </section>
+
+    </main>
   );
 }
