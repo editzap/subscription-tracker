@@ -13,7 +13,7 @@ export default function Home() {
         <Logo />
 
         <Link href="/tracker">
-          <button className="bg-black text-white px-4 py-2 rounded-lg text-sm">
+          <button className="bg-black text-white px-4 py-2 rounded-lg text-sm hover:opacity-90 transition">
             Open App
           </button>
         </Link>
@@ -25,6 +25,7 @@ export default function Home() {
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="text-5xl font-bold leading-tight mb-6"
         >
           Track subscriptions.
@@ -47,7 +48,8 @@ export default function Home() {
         <Link href="/tracker">
           <motion.button
             whileHover={{ scale: 1.05 }}
-            className="bg-black text-white px-8 py-3 rounded-xl text-lg"
+            whileTap={{ scale: 0.97 }}
+            className="bg-black text-white px-8 py-3 rounded-xl text-lg transition"
           >
             Start Tracking
           </motion.button>
@@ -66,7 +68,9 @@ export default function Home() {
             key={i}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="p-6 rounded-xl border bg-gray-50"
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="p-6 rounded-xl border bg-gray-50 hover:shadow-md transition"
           >
             <h3 className="font-semibold mb-2">{title}</h3>
             <p className="text-sm text-gray-600">{desc}</p>
@@ -81,7 +85,7 @@ export default function Home() {
         </h2>
 
         <Link href="/tracker">
-          <button className="bg-black text-white px-8 py-3 rounded-xl text-lg">
+          <button className="bg-black text-white px-8 py-3 rounded-xl text-lg hover:scale-105 transition">
             Open Tracker
           </button>
         </Link>
