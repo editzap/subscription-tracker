@@ -4,7 +4,47 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 
-// ✅ SEO METADATA (IMPORTANT)
+// ✅ Generate 100+ pages (SEO)
+export function generateStaticParams() {
+  const services = [
+    "netflix",
+    "spotify",
+    "youtube-premium",
+    "amazon-prime",
+    "chatgpt-plus",
+    "canva",
+    "apple-music",
+    "disney-plus",
+    "hotstar",
+    "zoom",
+    "notion",
+    "figma",
+    "adobe",
+    "dropbox",
+    "google-drive",
+    "microsoft-365",
+    "slack",
+    "trello",
+    "asana",
+    "skillshare",
+    "udemy",
+    "coursera",
+    "linkedin-premium",
+    "github",
+    "aws",
+    "digitalocean",
+    "shopify",
+    "wordpress",
+    "bluehost",
+    "hostinger",
+  ];
+
+  return services.map((service) => ({
+    service,
+  }));
+}
+
+// ✅ SEO metadata (dynamic)
 export async function generateMetadata({ params }: any) {
   const service = params.service;
 
@@ -13,8 +53,8 @@ export async function generateMetadata({ params }: any) {
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
 
   return {
-    title: `How to Cancel ${formatted} Subscription (Step-by-Step)`,
-    description: `Learn how to cancel your ${formatted} subscription easily. Step-by-step guide to stop payments and save money.`,
+    title: `How to Cancel ${formatted} Subscription (Step-by-Step Guide)`,
+    description: `Learn how to cancel your ${formatted} subscription easily. Stop recurring payments and save money instantly.`,
   };
 }
 
@@ -22,6 +62,7 @@ export default function CancelPage({ params }: any) {
   const router = useRouter();
   const service = params.service;
 
+  // Format name nicely
   const formatted = service
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c: string) => c.toUpperCase());
@@ -29,7 +70,7 @@ export default function CancelPage({ params }: any) {
   return (
     <div className="min-h-screen bg-white text-black px-6 py-10">
 
-      {/* Back */}
+      {/* Back Button */}
       <button
         onClick={() => router.push("/tracker")}
         className="flex items-center gap-2 text-sm mb-8 opacity-70 hover:opacity-100 transition"
@@ -40,7 +81,7 @@ export default function CancelPage({ params }: any) {
 
       <div className="max-w-xl mx-auto">
 
-        {/* SEO Heading */}
+        {/* Heading */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -56,7 +97,7 @@ export default function CancelPage({ params }: any) {
           </p>
         </motion.div>
 
-        {/* Content Block (SEO TEXT) */}
+        {/* SEO Content */}
         <div className="mb-8 text-sm text-gray-700 leading-relaxed">
           <p className="mb-3">
             If you're looking to cancel your {formatted} subscription,
@@ -69,6 +110,20 @@ export default function CancelPage({ params }: any) {
             and avoid future charges.
           </p>
         </div>
+
+        {/* Highlight */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-5 rounded-2xl border mb-8 bg-gray-50"
+        >
+          <p className="text-sm opacity-70 mb-1">
+            Why cancel?
+          </p>
+          <p className="text-xl font-semibold">
+            Save money every month 💸
+          </p>
+        </motion.div>
 
         {/* Steps */}
         <div className="mb-10">
@@ -102,7 +157,7 @@ export default function CancelPage({ params }: any) {
                 "_blank"
               )
             }
-            className="flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl"
+            className="flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl hover:scale-[1.02] transition"
           >
             <ExternalLink size={16} />
             View detailed guide
@@ -112,16 +167,16 @@ export default function CancelPage({ params }: any) {
             onClick={() =>
               alert("Coming soon: cheaper alternatives")
             }
-            className="border py-3 rounded-xl"
+            className="border py-3 rounded-xl hover:bg-gray-100 transition"
           >
             Find cheaper alternatives
           </button>
         </div>
 
-        {/* EXTRA SEO CONTENT */}
+        {/* Extra SEO Section */}
         <div className="text-sm text-gray-600 leading-relaxed">
           <h3 className="font-semibold mb-2">
-            Why cancel {formatted}?
+            Is it worth canceling {formatted}?
           </h3>
 
           <p className="mb-3">
