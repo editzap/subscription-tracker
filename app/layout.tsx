@@ -17,7 +17,7 @@ export default function RootLayout({
         {/* AdSense Script (keep even before approval) */}
         <script
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445312802335744"
           crossOrigin="anonymous"
         />
       </head>
