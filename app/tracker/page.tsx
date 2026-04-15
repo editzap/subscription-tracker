@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Trash2, Pencil, Moon, Sun } from "lucide-react";
+import { Trash2, Moon, Sun } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function Tracker() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -22,10 +23,7 @@ export default function Tracker() {
   const addSub = () => {
     if (!name || !cost) return;
 
-    save([
-      ...subs,
-      { id: Date.now(), name, cost: Number(cost) },
-    ]);
+    save([...subs, { id: Date.now(), name, cost: Number(cost) }]);
 
     setName("");
     setCost("");
@@ -37,15 +35,17 @@ export default function Tracker() {
 
   const total = subs.reduce((t, s) => t + s.cost, 0);
 
-  const bg = dark ? "bg-black text-white" : "bg-gray-50 text-black";
-  const card = dark ? "bg-gray-900" : "bg-white";
+  const bg = dark ? "bg-black text-white" : "bg-[#f9fafb]";
+  const card = dark
+    ? "bg-gray-900"
+    : "bg-white shadow-sm";
 
   return (
-    <div className={`min-h-screen p-6 ${bg}`}>
+    <div className={`min-h-screen px-6 py-10 ${bg}`}>
 
-      {/* Top */}
-      <div className="flex justify-between items-center max-w-2xl mx-auto mb-8">
-        <h1 className="text-xl font-semibold">SubTrack</h1>
+      {/* TOP */}
+      <div className="flex justify-between items-center max-w-2xl mx-auto mb-10">
+        <h1 className="text-lg font-medium">SubTrack</h1>
 
         <button onClick={() => setDark(!dark)}>
           {dark ? <Sun /> : <Moon />}
@@ -54,54 +54,71 @@ export default function Tracker() {
 
       <div className="max-w-2xl mx-auto">
 
-        {/* Total */}
-        <div className="text-center mb-10">
-          <h2 className="text-5xl font-bold">₹{total}</h2>
-          <p className="text-sm opacity-60">Monthly spend</p>
-        </div>
+        {/* TOTAL */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-6xl font-semibold tracking-tight">
+            ₹{total}
+          </h2>
+          <p className="text-sm opacity-50 mt-2">
+            monthly spend
+          </p>
+        </motion.div>
 
-        {/* Add */}
-        <div className={`p-4 rounded-xl mb-6 ${card}`}>
+        {/* INPUT CARD */}
+        <div className={`p-5 rounded-2xl mb-8 ${card}`}>
+
           <input
             placeholder="Subscription name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full mb-2 p-3 border rounded-lg"
+            className="w-full mb-3 p-3 rounded-lg bg-transparent border outline-none"
           />
 
           <input
             placeholder="Cost"
             value={cost}
             onChange={(e) => setCost(e.target.value)}
-            className="w-full mb-2 p-3 border rounded-lg"
+            className="w-full mb-4 p-3 rounded-lg bg-transparent border outline-none"
           />
 
           <button
             onClick={addSub}
-            className="w-full bg-black text-white py-3 rounded-lg"
+            className="w-full py-3 rounded-xl bg-black text-white dark:bg-white dark:text-black"
           >
-            Add Subscription
+            Add
           </button>
         </div>
 
-        {/* List */}
+        {/* LIST */}
         <div className="space-y-3">
           {subs.map((s) => (
-            <div
+            <motion.div
               key={s.id}
-              className={`p-4 rounded-xl flex justify-between ${card}`}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-2xl flex justify-between items-center ${card}`}
             >
               <div>
                 <p className="font-medium">{s.name}</p>
-                <p className="text-sm opacity-60">₹{s.cost}</p>
+                <p className="text-sm opacity-50">
+                  ₹{s.cost}
+                </p>
               </div>
 
-              <button onClick={() => deleteSub(s.id)}>
+              <button
+                onClick={() => deleteSub(s.id)}
+                className="opacity-60 hover:opacity-100"
+              >
                 <Trash2 size={18} />
               </button>
-            </div>
+            </motion.div>
           ))}
         </div>
+
       </div>
     </div>
   );

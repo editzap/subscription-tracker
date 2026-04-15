@@ -9,80 +9,85 @@ import { Moon, Sun } from "lucide-react";
 export default function Home() {
   const [dark, setDark] = useState(false);
 
-  const bg = dark ? "bg-black text-white" : "bg-white text-black";
-  const sub = dark ? "text-gray-400" : "text-gray-600";
-  const card = dark ? "bg-gray-900 border-gray-700" : "bg-white border-gray-200";
+  const bg = dark
+    ? "bg-black text-white"
+    : "bg-[#f9fafb] text-black";
+
+  const sub = dark ? "text-gray-400" : "text-gray-500";
 
   return (
     <div className={`min-h-screen transition ${bg}`}>
 
-      {/* Navbar */}
+      {/* NAV */}
       <div className="flex justify-between items-center px-6 py-5 max-w-6xl mx-auto">
         <Logo />
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setDark(!dark)}
-            className="border p-2 rounded-lg"
+            className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
           >
             {dark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
           <Link href="/tracker">
-            <button className="bg-black text-white dark:bg-white dark:text-black px-5 py-2 rounded-lg text-sm">
+            <button className="px-5 py-2 rounded-lg text-sm bg-black text-white dark:bg-white dark:text-black">
               Open App
             </button>
           </Link>
         </div>
       </div>
 
-      {/* Hero */}
-      <div className="text-center px-6 mt-28 max-w-4xl mx-auto">
+      {/* HERO */}
+      <div className="text-center mt-32 px-6 max-w-4xl mx-auto">
+
         <motion.h1
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-6xl font-bold leading-tight mb-6"
+          className="text-6xl font-semibold leading-tight mb-6 tracking-tight"
         >
-          Know where your money goes.
+          Stop paying for
+          <br />
+          things you don’t use.
         </motion.h1>
 
-        <p className={`text-lg mb-10 ${sub}`}>
-          Track subscriptions, spot waste, and take action instantly.
+        <p className={`text-lg ${sub} mb-10`}>
+          SubTrack helps you track subscriptions,
+          cut waste, and take control of your money.
         </p>
 
         <Link href="/tracker">
           <motion.button
-            whileHover={{ scale: 1.05 }}
-            className={`px-10 py-4 rounded-xl text-lg ${
-              dark ? "bg-white text-black" : "bg-black text-white"
-            }`}
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.97 }}
+            className="px-10 py-4 rounded-xl text-lg bg-black text-white dark:bg-white dark:text-black shadow-sm"
           >
-            Start Free
+            Start for free
           </motion.button>
         </Link>
       </div>
 
-      {/* Features */}
-      <div className="mt-32 grid md:grid-cols-3 gap-6 px-6 max-w-5xl mx-auto">
+      {/* FEATURE CARDS */}
+      <div className="mt-36 grid md:grid-cols-3 gap-6 px-6 max-w-5xl mx-auto">
         {[
-          ["Track Everything", "All subscriptions in one place"],
-          ["Find Waste", "See unused services instantly"],
-          ["Take Action", "Cancel and save money fast"],
+          ["Clarity", "All subscriptions in one place"],
+          ["Control", "Know exactly where money goes"],
+          ["Action", "Cancel and save instantly"],
         ].map(([title, desc], i) => (
           <motion.div
             key={i}
-            whileHover={{ y: -5 }}
-            className={`p-6 rounded-2xl border ${card}`}
+            whileHover={{ y: -6 }}
+            className="p-6 rounded-2xl bg-white dark:bg-gray-900 shadow-sm hover:shadow-md transition"
           >
-            <h3 className="font-semibold mb-2">{title}</h3>
+            <h3 className="font-medium mb-2">{title}</h3>
             <p className={`text-sm ${sub}`}>{desc}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Footer */}
-      <div className={`mt-32 text-center text-sm pb-6 ${sub}`}>
-        SubTrack — clarity over chaos.
+      {/* FOOTER */}
+      <div className={`mt-36 text-center text-sm pb-6 ${sub}`}>
+        SubTrack — built for clarity.
       </div>
     </div>
   );
