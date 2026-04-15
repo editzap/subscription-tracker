@@ -1,5 +1,4 @@
 import "./globals.css";
-import Script from "next/script";
 
 export const metadata = {
   title: "SubTrack",
@@ -14,13 +13,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script
-          id="adsense-script"
+        {/* ✅ ADSENSE DIRECT SCRIPT (IMPORTANT) */}
+        <script
           async
-          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445312802335744"
           crossOrigin="anonymous"
-        />
+        ></script>
       </head>
 
       <body>
