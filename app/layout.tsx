@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 
 export const metadata = {
   title: "SubTrack",
@@ -12,18 +13,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* ✅ ADSENSE SCRIPT (VISIBLE TO GOOGLE) */}
-        <script
+      <body>
+        
+        {/* ✅ ADSENSE SCRIPT (SAFE FOR NEXT.js) */}
+        <Script
+          id="adsense-script"
           async
+          strategy="afterInteractive"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445312802335744"
           crossOrigin="anonymous"
-        ></script>
-      </head>
+        />
 
-      <body>
         <div className="min-h-screen flex flex-col">
-
+          
           <div className="flex-1">
             {children}
           </div>
