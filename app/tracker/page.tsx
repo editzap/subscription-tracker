@@ -1,5 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import {
+  Trash2,
+  Pencil,
+  Moon,
+  Sun,
+  PlusCircle,
+} from "lucide-react";
 
 export default function Tracker() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -10,7 +17,6 @@ export default function Tracker() {
   const [editId, setEditId] = useState<number | null>(null);
   const [dark, setDark] = useState(false);
 
-  // Load
   useEffect(() => {
     const data = localStorage.getItem("subs");
     if (data) setSubs(JSON.parse(data));
@@ -33,15 +39,17 @@ export default function Tracker() {
       save(updated);
       setEditId(null);
     } else {
-      const newSub = {
-        id: Date.now(),
-        name,
-        cost: Number(cost),
-        cycle,
-        date,
-        used: true,
-      };
-      save([...subs, newSub]);
+      save([
+        ...subs,
+        {
+          id: Date.now(),
+          name,
+          cost: Number(cost),
+          cycle,
+          date,
+          used: true,
+        },
+      ]);
     }
 
     setName("");
@@ -85,26 +93,26 @@ export default function Tracker() {
   const card = dark ? "bg-gray-900 border-gray-700" : "bg-gray-100";
 
   return (
-    <div className={`min-h-screen p-6 ${bg}`}>
+    <div className={`min-h-screen px-4 py-6 ${bg}`}>
 
       {/* Top Bar */}
-      <div className="flex justify-between items-center max-w-4xl mx-auto mb-8">
-        <h1 className="text-2xl font-bold">SubTrack</h1>
+      <div className="flex justify-between items-center max-w-3xl mx-auto mb-6">
+        <h1 className="text-xl font-bold">SubTrack</h1>
 
         <button
           onClick={() => setDark(!dark)}
-          className="border px-3 py-1 rounded-lg text-sm"
+          className="border p-2 rounded-lg hover:scale-105 transition"
         >
-          {dark ? "Light" : "Dark"}
+          {dark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
       </div>
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-3xl mx-auto">
 
         {/* Total */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <p className="text-sm opacity-70">Monthly Spend</p>
-          <h2 className="text-5xl font-bold">
+          <h2 className="text-4xl md:text-5xl font-bold">
             ₹{total.toFixed(0)}
           </h2>
           <p className="text-sm opacity-60">
@@ -113,54 +121,59 @@ export default function Tracker() {
 
           {wasted > 0 && (
             <p className="text-red-500 mt-2 text-sm">
-              ₹{wasted.toFixed(0)} wasted / month
+              ₹{wasted.toFixed(0)} wasted
             </p>
           )}
         </div>
 
         {/* Form */}
-        <div className="grid md:grid-cols-4 gap-2 mb-8">
+        <div className="flex flex-col gap-3 mb-6">
           <input
-            placeholder="Name"
+            placeholder="Subscription name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="border p-2 rounded-lg"
+            className="border p-3 rounded-xl"
           />
-          <input
-            placeholder="Cost"
-            value={cost}
-            onChange={(e) => setCost(e.target.value)}
-            className="border p-2 rounded-lg"
-          />
-          <select
-            value={cycle}
-            onChange={(e) => setCycle(e.target.value)}
-            className="border p-2 rounded-lg"
-          >
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
+
+          <div className="flex gap-2">
+            <input
+              placeholder="Cost"
+              value={cost}
+              onChange={(e) => setCost(e.target.value)}
+              className="border p-3 rounded-xl w-1/2"
+            />
+            <select
+              value={cycle}
+              onChange={(e) => setCycle(e.target.value)}
+              className="border p-3 rounded-xl w-1/2"
+            >
+              <option value="monthly">Monthly</option>
+              <option value="yearly">Yearly</option>
+            </select>
+          </div>
+
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="border p-2 rounded-lg"
+            className="border p-3 rounded-xl"
           />
-        </div>
 
-        <button
-          onClick={handleSubmit}
-          className="w-full mb-10 bg-black text-white dark:bg-white dark:text-black py-3 rounded-xl"
-        >
-          {editId ? "Update Subscription" : "Add Subscription"}
-        </button>
+          <button
+            onClick={handleSubmit}
+            className="flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black py-3 rounded-xl hover:scale-[1.02] transition"
+          >
+            <PlusCircle size={18} />
+            {editId ? "Update" : "Add Subscription"}
+          </button>
+        </div>
 
         {/* List */}
         <div className="space-y-3">
           {subs.map((s) => (
             <div
               key={s.id}
-              className={`p-4 rounded-xl border flex justify-between items-center ${card}`}
+              className={`p-4 rounded-xl border flex justify-between items-center ${card} hover:shadow-md transition`}
             >
               <div>
                 <p className="font-semibold">{s.name}</p>
@@ -170,7 +183,7 @@ export default function Tracker() {
 
                 <button
                   onClick={() => toggleUsage(s.id)}
-                  className={`text-xs mt-1 ${
+                  className={`text-xs mt-1 transition ${
                     s.used ? "text-green-500" : "text-red-500"
                   }`}
                 >
@@ -178,18 +191,19 @@ export default function Tracker() {
                 </button>
               </div>
 
-              <div className="flex gap-3 text-sm">
+              <div className="flex gap-3">
                 <button
                   onClick={() => startEdit(s)}
-                  className="text-blue-500"
+                  className="hover:scale-110 transition"
                 >
-                  Edit
+                  <Pencil size={16} />
                 </button>
+
                 <button
                   onClick={() => deleteSub(s.id)}
-                  className="text-red-500"
+                  className="hover:scale-110 transition text-red-500"
                 >
-                  Delete
+                  <Trash2 size={16} />
                 </button>
               </div>
             </div>
