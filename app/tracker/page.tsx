@@ -7,6 +7,7 @@ import {
   Sun,
   PlusCircle,
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Tracker() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -110,21 +111,22 @@ export default function Tracker() {
       <div className="max-w-3xl mx-auto">
 
         {/* Total */}
-        <div className="text-center mb-8">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center mb-8"
+        >
           <p className="text-sm opacity-70">Monthly Spend</p>
           <h2 className="text-4xl md:text-5xl font-bold">
             ₹{total.toFixed(0)}
           </h2>
-          <p className="text-sm opacity-60">
-            ₹{(total * 12).toFixed(0)} / year
-          </p>
 
           {wasted > 0 && (
             <p className="text-red-500 mt-2 text-sm">
               ₹{wasted.toFixed(0)} wasted
             </p>
           )}
-        </div>
+        </motion.div>
 
         {/* Form */}
         <div className="flex flex-col gap-3 mb-6">
@@ -161,53 +163,71 @@ export default function Tracker() {
 
           <button
             onClick={handleSubmit}
-            className="flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black py-3 rounded-xl hover:scale-[1.02] transition"
+            className="flex items-center justify-center gap-2 bg-black text-white py-3 rounded-xl hover:scale-[1.02] transition"
           >
             <PlusCircle size={18} />
             {editId ? "Update" : "Add Subscription"}
           </button>
         </div>
 
-        {/* List */}
+        {/* EMPTY STATE */}
+        {subs.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center mt-10"
+          >
+            <p className="text-lg font-medium mb-2">
+              No subscriptions yet
+            </p>
+            <p className="text-sm opacity-60">
+              Add your first one to see where your money goes.
+            </p>
+          </motion.div>
+        )}
+
+        {/* LIST */}
         <div className="space-y-3">
-          {subs.map((s) => (
-            <div
-              key={s.id}
-              className={`p-4 rounded-xl border flex justify-between items-center ${card} hover:shadow-md transition`}
-            >
-              <div>
-                <p className="font-semibold">{s.name}</p>
-                <p className="text-sm opacity-70">
-                  ₹{s.cost} / {s.cycle}
-                </p>
+          <AnimatePresence>
+            {subs.map((s) => (
+              <motion.div
+                key={s.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className={`p-4 rounded-xl border flex justify-between items-center ${card}`}
+              >
+                <div>
+                  <p className="font-semibold">{s.name}</p>
+                  <p className="text-sm opacity-70">
+                    ₹{s.cost} / {s.cycle}
+                  </p>
 
-                <button
-                  onClick={() => toggleUsage(s.id)}
-                  className={`text-xs mt-1 transition ${
-                    s.used ? "text-green-500" : "text-red-500"
-                  }`}
-                >
-                  {s.used ? "Using" : "Not Using"}
-                </button>
-              </div>
+                  <button
+                    onClick={() => toggleUsage(s.id)}
+                    className={`text-xs mt-1 ${
+                      s.used ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {s.used ? "Using" : "Not Using"}
+                  </button>
+                </div>
 
-              <div className="flex gap-3">
-                <button
-                  onClick={() => startEdit(s)}
-                  className="hover:scale-110 transition"
-                >
-                  <Pencil size={16} />
-                </button>
+                <div className="flex gap-3">
+                  <button onClick={() => startEdit(s)}>
+                    <Pencil size={16} />
+                  </button>
 
-                <button
-                  onClick={() => deleteSub(s.id)}
-                  className="hover:scale-110 transition text-red-500"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
-            </div>
-          ))}
+                  <button
+                    onClick={() => deleteSub(s.id)}
+                    className="text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
 
       </div>
