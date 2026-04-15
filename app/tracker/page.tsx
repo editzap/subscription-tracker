@@ -81,34 +81,50 @@ export default function Tracker() {
     0
   );
 
-  // 🧠 SMART SUGGESTIONS
-  const suggestions: string[] = [];
+  // 🧠 CLICKABLE SUGGESTIONS
+  const suggestions: any[] = [];
 
-  // 1. Unused subscriptions
+  // Unused → cancel
   subs.forEach((s) => {
     if (!s.used) {
-      suggestions.push(
-        `Cancel ${s.name} → save ₹${s.cost}/month`
-      );
+      suggestions.push({
+        text: `Cancel ${s.name} → save ₹${s.cost}`,
+        action: () =>
+          window.open(
+            `https://www.google.com/search?q=cancel+${s.name}`,
+            "_blank"
+          ),
+      });
     }
   });
 
-  // 2. Too many entertainment apps
+  // Too many OTT
   const entertainment = subs.filter(
     (s) => s.category === "Entertainment"
   );
+
   if (entertainment.length >= 3) {
-    suggestions.push(
-      "You have multiple OTT apps → consider keeping 1–2"
-    );
+    suggestions.push({
+      text: "Too many OTT apps → reduce to 1–2",
+      action: () =>
+        alert("Tip: Keep only your most used platform."),
+    });
   }
 
-  // 3. High spend warning
+  // High spend
   if (total > 2000) {
-    suggestions.push(
-      `You're spending ₹${total} monthly → review subscriptions`
-    );
+    suggestions.push({
+      text: `Spending ₹${total}/month → review now`,
+      action: () =>
+        alert("Check unused subscriptions to reduce cost."),
+    });
   }
+
+  // 🤖 AUTO-DETECTION (basic pattern)
+  const knownServices = ["Netflix", "Spotify", "Prime"];
+  const detectedMissing = knownServices.filter(
+    (s) => !subs.some((sub) => sub.name.toLowerCase().includes(s.toLowerCase()))
+  );
 
   const bg = dark ? "bg-black text-white" : "bg-white text-black";
   const card = dark ? "bg-gray-900 border-gray-700" : "bg-gray-100";
@@ -140,10 +156,21 @@ export default function Tracker() {
             <h3 className="font-semibold mb-2">Smart Suggestions</h3>
 
             {suggestions.map((s, i) => (
-              <p key={i} className="text-sm mb-1">
-                • {s}
-              </p>
+              <button
+                key={i}
+                onClick={s.action}
+                className="block w-full text-left text-sm mb-2 hover:underline"
+              >
+                • {s.text}
+              </button>
             ))}
+          </div>
+        )}
+
+        {/* 🤖 Auto-detection */}
+        {detectedMissing.length > 0 && (
+          <div className="mb-6 text-sm opacity-70">
+            You might be using: {detectedMissing.join(", ")}
           </div>
         )}
 
