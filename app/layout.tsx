@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* ✅ ADSENSE DIRECT SCRIPT (IMPORTANT) */}
+        {/* ✅ ADSENSE SCRIPT (VISIBLE TO GOOGLE) */}
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445312802335744"
