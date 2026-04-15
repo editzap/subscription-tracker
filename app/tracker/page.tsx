@@ -17,11 +17,29 @@ export default function Tracker() {
   const [cost, setCost] = useState("");
   const [category, setCategory] = useState("Entertainment");
   const [dark, setDark] = useState(false);
+  const [streak, setStreak] = useState(0);
 
   // Load data
   useEffect(() => {
     const data = localStorage.getItem("subs");
     if (data) setSubs(JSON.parse(data));
+  }, []);
+
+  // 🔥 Streak system
+  useEffect(() => {
+    const lastVisit = localStorage.getItem("lastVisit");
+    const today = new Date().toDateString();
+
+    if (lastVisit !== today) {
+      const prev = Number(localStorage.getItem("streak") || 0);
+      const newStreak = prev + 1;
+
+      setStreak(newStreak);
+      localStorage.setItem("streak", String(newStreak));
+      localStorage.setItem("lastVisit", today);
+    } else {
+      setStreak(Number(localStorage.getItem("streak") || 0));
+    }
   }, []);
 
   const save = (data: any[]) => {
@@ -42,6 +60,8 @@ export default function Tracker() {
       },
     ]);
 
+    navigator.vibrate?.(10); // mobile feel
+
     setName("");
     setCost("");
   };
@@ -52,7 +72,7 @@ export default function Tracker() {
 
   const total = subs.reduce((t, s) => t + s.cost, 0);
 
-  // 📊 Category breakdown
+  // 📊 Chart data
   const dataMap: any = {};
   subs.forEach((s) => {
     dataMap[s.category] =
@@ -66,63 +86,81 @@ export default function Tracker() {
 
   const COLORS = ["#000", "#444", "#888", "#bbb"];
 
+  // 🔔 Notifications
+  const enableNotifications = () => {
+    if (Notification.permission === "granted") {
+      new Notification("SubTrack Reminder", {
+        body: "Check your subscriptions today 💸",
+      });
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission().then((p) => {
+        if (p === "granted") {
+          new Notification("Notifications enabled ✅");
+        }
+      });
+    }
+  };
+
   const bg = dark ? "bg-black text-white" : "bg-[#f9fafb]";
   const card = dark ? "bg-gray-900" : "bg-white";
 
   return (
-    <div className={`min-h-screen px-6 py-10 ${bg}`}>
+    <div className={`min-h-screen px-6 py-10 pb-24 ${bg}`}>
 
-      {/* Top Bar */}
-      <div className="flex justify-between items-center max-w-2xl mx-auto mb-10">
+      {/* Top */}
+      <div className="flex justify-between items-center max-w-2xl mx-auto mb-8">
         <h1 className="text-lg font-medium">SubTrack</h1>
 
-        <button
-          onClick={() => setDark(!dark)}
-          className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800"
-        >
-          {dark ? <Sun /> : <Moon />}
-        </button>
+        <div className="flex gap-3 items-center">
+          <button
+            onClick={enableNotifications}
+            className="text-xs opacity-60 underline"
+          >
+            Remind
+          </button>
+
+          <button onClick={() => setDark(!dark)}>
+            {dark ? <Sun /> : <Moon />}
+          </button>
+        </div>
       </div>
 
       <div className="max-w-2xl mx-auto">
 
         {/* Total */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center mb-10"
-        >
-          <h2 className="text-6xl font-semibold tracking-tight">
-            ₹{total}
-          </h2>
-          <p className="text-sm opacity-50 mt-2">
-            monthly spend
-          </p>
+        <motion.div className="text-center mb-6">
+          <h2 className="text-6xl font-semibold">₹{total}</h2>
+          <p className="text-sm opacity-50">monthly spend</p>
         </motion.div>
 
-        {/* 🧠 Habit Loop */}
+        {/* 🔥 Streak */}
+        <div className="text-center mb-6 text-sm opacity-70">
+          🔥 {streak} day streak
+        </div>
+
+        {/* 🧠 Habit loop */}
         {subs.length > 0 && (
-          <div className="text-center mb-6 text-sm opacity-60">
+          <div className="text-center text-sm opacity-60 mb-3">
             You are spending ₹{total}/month
           </div>
         )}
 
         {total > 1000 && (
           <div className="text-center text-sm text-red-500 mb-6">
-            You're losing money every month ⚠️
+            You're losing money ⚠️
           </div>
         )}
 
         {/* 🚀 Onboarding */}
         {subs.length === 0 && (
-          <div className="text-center mb-10 opacity-60">
-            Add your first subscription to get started 👇
+          <div className="text-center mb-8 opacity-60">
+            Add your first subscription 👇
           </div>
         )}
 
         {/* 📊 Chart */}
         {chartData.length > 0 && (
-          <div className={`p-6 rounded-2xl mb-8 ${card}`}>
+          <div className={`p-5 rounded-2xl mb-8 ${card}`}>
             <h3 className="text-sm mb-4 opacity-60">
               Spending breakdown
             </h3>
@@ -147,27 +185,26 @@ export default function Tracker() {
           </div>
         )}
 
-        {/* Add Subscription */}
+        {/* Add */}
         <div className={`p-5 rounded-2xl mb-8 ${card}`}>
-
           <input
             placeholder="Subscription name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full mb-3 p-3 rounded-lg border outline-none"
+            className="w-full mb-3 p-3 rounded-lg border"
           />
 
           <input
             placeholder="Cost"
             value={cost}
             onChange={(e) => setCost(e.target.value)}
-            className="w-full mb-3 p-3 rounded-lg border outline-none"
+            className="w-full mb-3 p-3 rounded-lg border"
           />
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full mb-4 p-3 rounded-lg border outline-none"
+            className="w-full mb-4 p-3 rounded-lg border"
           >
             <option>Entertainment</option>
             <option>Work</option>
@@ -192,9 +229,9 @@ export default function Tracker() {
           {subs.map((s) => (
             <motion.div
               key={s.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`p-4 rounded-2xl flex justify-between items-center ${card}`}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className={`p-4 rounded-2xl flex justify-between ${card}`}
             >
               <div>
                 <p className="font-medium">{s.name}</p>
@@ -203,16 +240,20 @@ export default function Tracker() {
                 </p>
               </div>
 
-              <button
-                onClick={() => deleteSub(s.id)}
-                className="opacity-60 hover:opacity-100"
-              >
+              <button onClick={() => deleteSub(s.id)}>
                 <Trash2 size={18} />
               </button>
             </motion.div>
           ))}
         </div>
 
+      </div>
+
+      {/* 📱 Bottom Bar */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t p-3 flex justify-around text-sm">
+        <span>Home</span>
+        <span>Add</span>
+        <span>Insights</span>
       </div>
     </div>
   );
