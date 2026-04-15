@@ -3,99 +3,87 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Logo from "../components/Logo";
+import { useState } from "react";
+import { Moon, Sun } from "lucide-react";
 
 export default function Home() {
+  const [dark, setDark] = useState(false);
+
+  const bg = dark ? "bg-black text-white" : "bg-white text-black";
+  const sub = dark ? "text-gray-400" : "text-gray-600";
+  const card = dark ? "bg-gray-900 border-gray-700" : "bg-white border-gray-200";
+
   return (
-    <div className="min-h-screen bg-white text-black">
+    <div className={`min-h-screen transition ${bg}`}>
 
       {/* Navbar */}
-      <div className="flex justify-between items-center px-6 py-4 max-w-6xl mx-auto">
+      <div className="flex justify-between items-center px-6 py-5 max-w-6xl mx-auto">
         <Logo />
 
-        <Link href="/tracker">
-          <button className="bg-black text-white px-4 py-2 rounded-lg text-sm hover:opacity-90 transition">
-            Open App
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setDark(!dark)}
+            className="border p-2 rounded-lg"
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-        </Link>
+
+          <Link href="/tracker">
+            <button className="bg-black text-white dark:bg-white dark:text-black px-5 py-2 rounded-lg text-sm">
+              Open App
+            </button>
+          </Link>
+        </div>
       </div>
 
       {/* Hero */}
-      <div className="text-center px-6 mt-24 max-w-3xl mx-auto">
-
+      <div className="text-center px-6 mt-28 max-w-4xl mx-auto">
         <motion.h1
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-5xl font-bold leading-tight mb-6"
+          className="text-6xl font-bold leading-tight mb-6"
         >
-          Track subscriptions.
-          <br />
-          <span className="text-gray-600">
-            Stop wasting money.
-          </span>
+          Know where your money goes.
         </motion.h1>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="text-lg text-gray-700 mb-8"
-        >
-          See where your money goes, cancel what you don’t use,
-          and save every month.
-        </motion.p>
+        <p className={`text-lg mb-10 ${sub}`}>
+          Track subscriptions, spot waste, and take action instantly.
+        </p>
 
         <Link href="/tracker">
           <motion.button
             whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.97 }}
-            className="bg-black text-white px-8 py-3 rounded-xl text-lg transition"
+            className={`px-10 py-4 rounded-xl text-lg ${
+              dark ? "bg-white text-black" : "bg-black text-white"
+            }`}
           >
-            Start Tracking
+            Start Free
           </motion.button>
         </Link>
       </div>
 
       {/* Features */}
-      <div className="mt-28 px-6 max-w-5xl mx-auto grid md:grid-cols-3 gap-6">
-
+      <div className="mt-32 grid md:grid-cols-3 gap-6 px-6 max-w-5xl mx-auto">
         {[
-          ["💸 Save Money", "Find unused subscriptions instantly"],
-          ["🧠 Smart Insights", "Know where you're overspending"],
-          ["⚡ Take Action", "Cancel services in seconds"],
+          ["Track Everything", "All subscriptions in one place"],
+          ["Find Waste", "See unused services instantly"],
+          ["Take Action", "Cancel and save money fast"],
         ].map(([title, desc], i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.1 }}
-            className="p-6 rounded-xl border bg-gray-50 hover:shadow-md transition"
+            whileHover={{ y: -5 }}
+            className={`p-6 rounded-2xl border ${card}`}
           >
             <h3 className="font-semibold mb-2">{title}</h3>
-            <p className="text-sm text-gray-600">{desc}</p>
+            <p className={`text-sm ${sub}`}>{desc}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* CTA */}
-      <div className="mt-28 text-center px-6">
-        <h2 className="text-3xl font-bold mb-6">
-          Start saving today
-        </h2>
-
-        <Link href="/tracker">
-          <button className="bg-black text-white px-8 py-3 rounded-xl text-lg hover:scale-105 transition">
-            Open Tracker
-          </button>
-        </Link>
-      </div>
-
       {/* Footer */}
-      <div className="mt-20 text-center text-sm text-gray-500 pb-6">
-        SubTrack — spend smarter.
+      <div className={`mt-32 text-center text-sm pb-6 ${sub}`}>
+        SubTrack — clarity over chaos.
       </div>
-
     </div>
   );
 }
