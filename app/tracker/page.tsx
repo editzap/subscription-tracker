@@ -8,12 +8,6 @@ import {
   PlusCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-} from "recharts";
 
 export default function Tracker() {
   const [subs, setSubs] = useState<any[]>([]);
@@ -28,13 +22,6 @@ export default function Tracker() {
   useEffect(() => {
     const data = localStorage.getItem("subs");
     if (data) setSubs(JSON.parse(data));
-  }, []);
-
-  // 🔔 Request notification permission
-  useEffect(() => {
-    if ("Notification" in window) {
-      Notification.requestPermission();
-    }
   }, []);
 
   const save = (data: any[]) => {
@@ -80,39 +67,48 @@ export default function Tracker() {
     setEditId(s.id);
   };
 
-  const getDaysLeft = (date: string) => {
-    const today = new Date();
-    const next = new Date(date);
-    return Math.ceil(
-      (next.getTime() - today.getTime()) /
-        (1000 * 60 * 60 * 24)
+  const toggleUsage = (id: number) => {
+    save(
+      subs.map((s) =>
+        s.id === id ? { ...s, used: !s.used } : s
+      )
     );
   };
 
-  // 🔔 Trigger notifications
-  useEffect(() => {
-    subs.forEach((s) => {
-      const days = getDaysLeft(s.date);
-
-      if (days === 0 && Notification.permission === "granted") {
-        new Notification(`${s.name} is due today 💸`);
-      }
-    });
-  }, [subs]);
-
-  // 📊 Category totals
-  const categoryTotals: any = {};
-  subs.forEach((s) => {
-    const value = s.cycle === "yearly" ? s.cost / 12 : s.cost;
-    categoryTotals[s.category] =
-      (categoryTotals[s.category] || 0) + value;
-  });
-
-  const chartData = Object.entries(categoryTotals).map(
-    ([name, value]) => ({ name, value })
+  // 💰 TOTAL
+  const total = subs.reduce(
+    (t, s) => t + (s.cycle === "yearly" ? s.cost / 12 : s.cost),
+    0
   );
 
-  const COLORS = ["#000", "#555", "#888", "#ccc"];
+  // 🧠 SMART SUGGESTIONS
+  const suggestions: string[] = [];
+
+  // 1. Unused subscriptions
+  subs.forEach((s) => {
+    if (!s.used) {
+      suggestions.push(
+        `Cancel ${s.name} → save ₹${s.cost}/month`
+      );
+    }
+  });
+
+  // 2. Too many entertainment apps
+  const entertainment = subs.filter(
+    (s) => s.category === "Entertainment"
+  );
+  if (entertainment.length >= 3) {
+    suggestions.push(
+      "You have multiple OTT apps → consider keeping 1–2"
+    );
+  }
+
+  // 3. High spend warning
+  if (total > 2000) {
+    suggestions.push(
+      `You're spending ₹${total} monthly → review subscriptions`
+    );
+  }
 
   const bg = dark ? "bg-black text-white" : "bg-white text-black";
   const card = dark ? "bg-gray-900 border-gray-700" : "bg-gray-100";
@@ -130,21 +126,24 @@ export default function Tracker() {
 
       <div className="max-w-3xl mx-auto">
 
-        {/* 📊 Chart */}
-        {chartData.length > 0 && (
-          <div className="mb-6 flex justify-center">
-            <PieChart width={250} height={250}>
-              <Pie
-                data={chartData}
-                dataKey="value"
-                outerRadius={100}
-              >
-                {chartData.map((_, i) => (
-                  <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
+        {/* Total */}
+        <div className="text-center mb-6">
+          <h2 className="text-4xl font-bold">
+            ₹{total.toFixed(0)}
+          </h2>
+          <p className="text-sm opacity-60">Monthly Spend</p>
+        </div>
+
+        {/* 🧠 Suggestions */}
+        {suggestions.length > 0 && (
+          <div className="mb-6 p-4 rounded-xl border bg-yellow-100 text-black">
+            <h3 className="font-semibold mb-2">Smart Suggestions</h3>
+
+            {suggestions.map((s, i) => (
+              <p key={i} className="text-sm mb-1">
+                • {s}
+              </p>
+            ))}
           </div>
         )}
 
@@ -203,48 +202,45 @@ export default function Tracker() {
 
         {/* List */}
         <AnimatePresence>
-          {subs.map((s) => {
-            const days = getDaysLeft(s.date);
+          {subs.map((s) => (
+            <motion.div
+              key={s.id}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className={`p-3 mb-2 rounded border ${card}`}
+            >
+              <div className="flex justify-between">
+                <div>
+                  <p className="font-semibold">{s.name}</p>
+                  <p className="text-xs opacity-60">
+                    ₹{s.cost} • {s.category}
+                  </p>
 
-            return (
-              <motion.div
-                key={s.id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className={`p-3 mb-2 rounded border ${card}`}
-              >
-                <div className="flex justify-between">
-                  <div>
-                    <p className="font-semibold">{s.name}</p>
-                    <p className="text-xs opacity-60">
-                      ₹{s.cost} • {s.category}
-                    </p>
-
-                    <p className="text-xs mt-1 text-yellow-500">
-                      {days === 0
-                        ? "Due today"
-                        : days === 1
-                        ? "Due tomorrow"
-                        : `${days} days left`}
-                    </p>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <button onClick={() => startEdit(s)}>
-                      <Pencil size={16} />
-                    </button>
-                    <button
-                      onClick={() => deleteSub(s.id)}
-                      className="text-red-500"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => toggleUsage(s.id)}
+                    className={`text-xs mt-1 ${
+                      s.used ? "text-green-500" : "text-red-500"
+                    }`}
+                  >
+                    {s.used ? "Using" : "Not Using"}
+                  </button>
                 </div>
-              </motion.div>
-            );
-          })}
+
+                <div className="flex gap-2">
+                  <button onClick={() => startEdit(s)}>
+                    <Pencil size={16} />
+                  </button>
+                  <button
+                    onClick={() => deleteSub(s.id)}
+                    className="text-red-500"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </AnimatePresence>
 
       </div>
