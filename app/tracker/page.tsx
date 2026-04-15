@@ -25,7 +25,7 @@ export default function Tracker() {
     if (data) setSubs(JSON.parse(data));
   }, []);
 
-  // 🔥 Streak system
+  // Streak system
   useEffect(() => {
     const lastVisit = localStorage.getItem("lastVisit");
     const today = new Date().toDateString();
@@ -50,7 +50,7 @@ export default function Tracker() {
   const addSub = () => {
     if (!name || !cost) return;
 
-    save([
+    const updated = [
       ...subs,
       {
         id: Date.now(),
@@ -58,9 +58,13 @@ export default function Tracker() {
         cost: Number(cost),
         category,
       },
-    ]);
+    ];
 
-    navigator.vibrate?.(10); // mobile feel
+    save(updated);
+
+    if (typeof window !== "undefined") {
+      navigator.vibrate?.(10);
+    }
 
     setName("");
     setCost("");
@@ -72,7 +76,7 @@ export default function Tracker() {
 
   const total = subs.reduce((t, s) => t + s.cost, 0);
 
-  // 📊 Chart data
+  // Chart
   const dataMap: any = {};
   subs.forEach((s) => {
     dataMap[s.category] =
@@ -84,88 +88,79 @@ export default function Tracker() {
     value: dataMap[key],
   }));
 
-  const COLORS = ["#000", "#444", "#888", "#bbb"];
+  const COLORS = ["#111", "#444", "#777", "#aaa"];
 
-  // 🔔 Notifications
-  const enableNotifications = () => {
-    if (Notification.permission === "granted") {
-      new Notification("SubTrack Reminder", {
-        body: "Check your subscriptions today 💸",
-      });
-    } else if (Notification.permission !== "denied") {
-      Notification.requestPermission().then((p) => {
-        if (p === "granted") {
-          new Notification("Notifications enabled ✅");
-        }
-      });
-    }
-  };
-
-  const bg = dark ? "bg-black text-white" : "bg-[#f9fafb]";
-  const card = dark ? "bg-gray-900" : "bg-white";
+  const bg = dark ? "bg-black text-white" : "bg-[#f7f7f7]";
+  const card = dark
+    ? "bg-gray-900 border border-gray-800"
+    : "bg-white border border-gray-200 shadow-sm";
 
   return (
     <div className={`min-h-screen px-6 py-10 pb-24 ${bg}`}>
 
-      {/* Top */}
-      <div className="flex justify-between items-center max-w-2xl mx-auto mb-8">
-        <h1 className="text-lg font-medium">SubTrack</h1>
+      {/* Top Bar */}
+      <div className="flex justify-between items-center max-w-2xl mx-auto mb-10">
+        <h1 className="text-lg font-semibold tracking-tight">
+          SubTrack
+        </h1>
 
-        <div className="flex gap-3 items-center">
-          <button
-            onClick={enableNotifications}
-            className="text-xs opacity-60 underline"
-          >
-            Remind
-          </button>
-
-          <button onClick={() => setDark(!dark)}>
-            {dark ? <Sun /> : <Moon />}
-          </button>
-        </div>
+        <button
+          onClick={() => setDark(!dark)}
+          className="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+        >
+          {dark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
       </div>
 
       <div className="max-w-2xl mx-auto">
 
         {/* Total */}
-        <motion.div className="text-center mb-6">
-          <h2 className="text-6xl font-semibold">₹{total}</h2>
-          <p className="text-sm opacity-50">monthly spend</p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center mb-4"
+        >
+          <h2 className="text-6xl font-semibold tracking-tight">
+            ₹{total}
+          </h2>
+          <p className="text-sm opacity-50 mt-1">
+            monthly spend
+          </p>
         </motion.div>
 
-        {/* 🔥 Streak */}
+        {/* Streak */}
         <div className="text-center mb-6 text-sm opacity-70">
           🔥 {streak} day streak
         </div>
 
-        {/* 🧠 Habit loop */}
+        {/* Habit */}
         {subs.length > 0 && (
-          <div className="text-center text-sm opacity-60 mb-3">
-            You are spending ₹{total}/month
+          <div className="text-center text-sm opacity-60 mb-2">
+            You’re spending ₹{total}/month
           </div>
         )}
 
         {total > 1000 && (
           <div className="text-center text-sm text-red-500 mb-6">
-            You're losing money ⚠️
+            That’s quietly draining your money ⚠️
           </div>
         )}
 
-        {/* 🚀 Onboarding */}
+        {/* Onboarding */}
         {subs.length === 0 && (
           <div className="text-center mb-8 opacity-60">
-            Add your first subscription 👇
+            Start by adding your first subscription ↓
           </div>
         )}
 
-        {/* 📊 Chart */}
+        {/* Chart */}
         {chartData.length > 0 && (
-          <div className={`p-5 rounded-2xl mb-8 ${card}`}>
-            <h3 className="text-sm mb-4 opacity-60">
+          <div className={`p-6 rounded-2xl mb-8 ${card}`}>
+            <p className="text-sm mb-4 opacity-50">
               Spending breakdown
-            </h3>
+            </p>
 
-            <ResponsiveContainer width="100%" height={250}>
+            <ResponsiveContainer width="100%" height={240}>
               <PieChart>
                 <Pie
                   data={chartData}
@@ -185,26 +180,27 @@ export default function Tracker() {
           </div>
         )}
 
-        {/* Add */}
-        <div className={`p-5 rounded-2xl mb-8 ${card}`}>
+        {/* Input Card */}
+        <div className={`p-6 rounded-2xl mb-8 ${card}`}>
+
           <input
             placeholder="Subscription name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full mb-3 p-3 rounded-lg border"
+            className="w-full mb-3 p-3 rounded-xl bg-transparent border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
           />
 
           <input
             placeholder="Cost"
             value={cost}
             onChange={(e) => setCost(e.target.value)}
-            className="w-full mb-3 p-3 rounded-lg border"
+            className="w-full mb-3 p-3 rounded-xl bg-transparent border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black"
           />
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full mb-4 p-3 rounded-lg border"
+            className="w-full mb-4 p-3 rounded-xl bg-transparent border border-gray-300 dark:border-gray-700"
           >
             <option>Entertainment</option>
             <option>Work</option>
@@ -214,10 +210,10 @@ export default function Tracker() {
 
           <button
             onClick={addSub}
-            className={`w-full py-3 rounded-xl ${
+            className={`w-full py-3 rounded-xl text-sm font-medium transition ${
               dark
-                ? "bg-white text-black"
-                : "bg-black text-white"
+                ? "bg-white text-black hover:opacity-90"
+                : "bg-black text-white hover:opacity-90"
             }`}
           >
             Add Subscription
@@ -229,9 +225,9 @@ export default function Tracker() {
           {subs.map((s) => (
             <motion.div
               key={s.id}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className={`p-4 rounded-2xl flex justify-between ${card}`}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`p-4 rounded-2xl flex justify-between items-center ${card}`}
             >
               <div>
                 <p className="font-medium">{s.name}</p>
@@ -240,7 +236,10 @@ export default function Tracker() {
                 </p>
               </div>
 
-              <button onClick={() => deleteSub(s.id)}>
+              <button
+                onClick={() => deleteSub(s.id)}
+                className="opacity-50 hover:opacity-100 transition"
+              >
                 <Trash2 size={18} />
               </button>
             </motion.div>
@@ -249,11 +248,11 @@ export default function Tracker() {
 
       </div>
 
-      {/* 📱 Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t p-3 flex justify-around text-sm">
-        <span>Home</span>
-        <span>Add</span>
-        <span>Insights</span>
+      {/* Bottom Bar (Mobile Feel) */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 p-3 flex justify-around text-sm backdrop-blur">
+        <span className="opacity-80">Home</span>
+        <span className="opacity-80">Add</span>
+        <span className="opacity-80">Insights</span>
       </div>
     </div>
   );
