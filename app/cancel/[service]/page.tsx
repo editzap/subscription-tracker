@@ -1,5 +1,3 @@
-// ✅ SERVER COMPONENT (NO "use client")
-
 export function generateStaticParams() {
   return [
     { service: "netflix" },
@@ -11,7 +9,6 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: any) {
   return {
     title: `Cancel ${params.service}`,
-    description: `Cancel ${params.service} subscription`,
   };
 }
 
