@@ -1,27 +1,27 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 export default function Landing() {
   const [dark, setDark] = useState(false);
 
-  useEffect(() => {
-    if (dark) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [dark]);
-
   return (
-    <div className="min-h-screen bg-white dark:bg-black text-black dark:text-white transition duration-300">
+    <div
+      className={`min-h-screen transition duration-300 ${
+        dark ? "bg-black text-white" : "bg-white text-black"
+      }`}
+    >
 
       {/* Navbar */}
       <div className="flex justify-between items-center px-6 py-4 max-w-6xl mx-auto">
         
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-black dark:bg-white flex items-center justify-center text-white dark:text-black font-bold">
+          <div
+            className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold ${
+              dark ? "bg-white text-black" : "bg-black text-white"
+            }`}
+          >
             S
           </div>
           <h1 className="font-semibold text-lg">SubTrack</h1>
@@ -36,7 +36,13 @@ export default function Landing() {
           </button>
 
           <Link href="/tracker">
-            <button className="bg-black text-white dark:bg-white dark:text-black px-4 py-2 rounded-lg text-sm">
+            <button
+              className={`px-4 py-2 rounded-lg text-sm ${
+                dark
+                  ? "bg-white text-black"
+                  : "bg-black text-white"
+              }`}
+            >
               Open App
             </button>
           </Link>
@@ -54,7 +60,7 @@ export default function Landing() {
         >
           Track your subscriptions.
           <br />
-          <span className="text-gray-600 dark:text-gray-400">
+          <span className={dark ? "text-gray-400" : "text-gray-600"}>
             Stop wasting money.
           </span>
         </motion.h1>
@@ -63,7 +69,9 @@ export default function Landing() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          className="text-lg text-gray-700 dark:text-gray-300 mb-8"
+          className={`text-lg mb-8 ${
+            dark ? "text-gray-300" : "text-gray-700"
+          }`}
         >
           See exactly how much you spend every month,
           what you actually use, and what you should cancel.
@@ -75,7 +83,13 @@ export default function Landing() {
           transition={{ delay: 0.5 }}
         >
           <Link href="/tracker">
-            <button className="bg-black text-white dark:bg-white dark:text-black px-8 py-3 rounded-xl text-lg hover:scale-105 transition">
+            <button
+              className={`px-8 py-3 rounded-xl text-lg transition hover:scale-105 ${
+                dark
+                  ? "bg-white text-black"
+                  : "bg-black text-white"
+              }`}
+            >
               Start Tracking
             </button>
           </Link>
@@ -95,10 +109,18 @@ export default function Landing() {
             initial={{ opacity: 0, y: 60 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.2 }}
-            className="p-6 rounded-xl border bg-gray-100 dark:bg-gray-900"
+            className={`p-6 rounded-xl border ${
+              dark
+                ? "bg-gray-900 border-gray-700"
+                : "bg-gray-100"
+            }`}
           >
             <h3 className="font-semibold mb-2">{title}</h3>
-            <p className="text-sm text-gray-700 dark:text-gray-400">
+            <p
+              className={`text-sm ${
+                dark ? "text-gray-400" : "text-gray-700"
+              }`}
+            >
               {desc}
             </p>
           </motion.div>
@@ -106,7 +128,11 @@ export default function Landing() {
       </div>
 
       {/* Footer */}
-      <div className="mt-20 text-center text-sm text-gray-500 dark:text-gray-400 pb-6">
+      <div
+        className={`mt-20 text-center text-sm pb-6 ${
+          dark ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
         SubTrack — clarity over chaos.
       </div>
 
