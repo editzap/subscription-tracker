@@ -15,12 +15,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
 
-        {/* ADSENSE SCRIPT */}
+        {/* ADSENSE */}
         <Script
           id="adsense-script"
-          async
           strategy="afterInteractive"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXX"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4445312802335744"
           crossOrigin="anonymous"
         />
 
