@@ -18,11 +18,7 @@ export default function Tracker() {
   const addSub = () => {
     if (!name || !price) return;
 
-    setSubs([
-      ...subs,
-      { name, price: Number(price), category },
-    ]);
-
+    setSubs([...subs, { name, price: Number(price), category }]);
     setName("");
     setPrice("");
   };
@@ -30,18 +26,40 @@ export default function Tracker() {
   const total = subs.reduce((sum, s) => sum + s.price, 0);
 
   return (
-    <main className="min-h-screen bg-black text-white px-6 py-10">
+    <main className="min-h-screen bg-black text-white overflow-hidden">
 
-      {/* HEADER */}
-      <div className="max-w-5xl mx-auto mb-10">
-        <h1 className="text-3xl font-semibold">Subscription Dashboard</h1>
-        <p className="text-gray-400">
-          Track all your subscriptions — not just Netflix.
-        </p>
+      {/* SAME GLOW AS HOMEPAGE */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute w-[500px] h-[500px] bg-purple-500 opacity-20 blur-3xl top-[-100px] left-[-100px]" />
+        <div className="absolute w-[500px] h-[500px] bg-blue-500 opacity-20 blur-3xl bottom-[-100px] right-[-100px]" />
       </div>
 
+      {/* NAV (MATCH HOMEPAGE) */}
+      <nav className="flex justify-between items-center px-6 py-4 max-w-6xl mx-auto">
+        <div className="text-lg font-medium tracking-tight text-white/90">
+          SubTrack
+        </div>
+
+        <a
+          href="/"
+          className="text-sm text-white/70 hover:text-white transition"
+        >
+          ← Home
+        </a>
+      </nav>
+
+      {/* HEADER */}
+      <section className="max-w-4xl mx-auto px-6 pt-16 pb-10">
+        <h1 className="text-4xl font-semibold mb-3">
+          Subscription Dashboard
+        </h1>
+        <p className="text-gray-400">
+          Everything you pay for — in one place.
+        </p>
+      </section>
+
       {/* ADD CARD */}
-      <div className="max-w-5xl mx-auto mb-8">
+      <section className="max-w-4xl mx-auto px-6 mb-8">
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl">
 
           <div className="grid md:grid-cols-4 gap-4">
@@ -49,7 +67,7 @@ export default function Tracker() {
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Spotify / Gym / ChatGPT"
+              placeholder="Spotify / Gym / ChatGPT"
               className="bg-black/50 border border-white/10 rounded-xl px-4 py-3 outline-none"
             />
 
@@ -84,18 +102,18 @@ export default function Tracker() {
           </div>
 
         </div>
-      </div>
+      </section>
 
-      {/* TOTAL CARD */}
-      <div className="max-w-5xl mx-auto mb-8">
+      {/* TOTAL (PREMIUM CARD) */}
+      <section className="max-w-4xl mx-auto px-6 mb-8">
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6 backdrop-blur-xl flex justify-between text-lg">
-          <span>Total Monthly Spend</span>
+          <span>Total Monthly</span>
           <span className="font-semibold">${total}</span>
         </div>
-      </div>
+      </section>
 
       {/* LIST */}
-      <div className="max-w-5xl mx-auto space-y-4">
+      <section className="max-w-4xl mx-auto px-6 pb-20 space-y-4">
 
         {subs.map((sub, i) => (
           <motion.div
@@ -117,11 +135,11 @@ export default function Tracker() {
 
         {subs.length === 0 && (
           <div className="text-center text-gray-500 mt-10">
-            No subscriptions yet — start adding anything.
+            Start adding subscriptions — anything you pay for.
           </div>
         )}
 
-      </div>
+      </section>
 
     </main>
   );
