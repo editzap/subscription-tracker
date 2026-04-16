@@ -1,54 +1,9 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 export default function HomeClient() {
   return (
-    <main className="min-h-screen bg-black text-white overflow-hidden">
-
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute w-[500px] h-[500px] bg-purple-500 opacity-20 blur-3xl top-[-100px] left-[-100px]" />
-        <div className="absolute w-[500px] h-[500px] bg-blue-500 opacity-20 blur-3xl bottom-[-100px] right-[-100px]" />
-      </div>
-
-      <nav className="flex justify-between items-center px-6 py-4 max-w-6xl mx-auto">
-        <div className="text-lg font-medium tracking-tight text-white/90">
-          SubTrack
-        </div>
-
-        <a href="/tracker" className="text-sm text-white/70 hover:text-white">
-          Open App →
-        </a>
-      </nav>
-
-      <section className="text-center px-6 py-32 max-w-4xl mx-auto">
-        <motion.h1
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-6xl font-bold mb-6"
-        >
-          Stop paying for what you forgot.
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-gray-400 mb-10"
-        >
-          Track subscriptions. Cancel smarter.
-        </motion.p>
-
-        <div className="flex justify-center gap-4">
-          <a href="/tracker" className="bg-white text-black px-6 py-3 rounded-xl">
-            Get Started
-          </a>
-
-          <a href="/cancel/netflix" className="border px-6 py-3 rounded-xl">
-            Explore
-          </a>
-        </div>
-      </section>
-
+    <main className="min-h-screen bg-black text-white flex items-center justify-center">
+      <h1 className="text-4xl font-semibold">SubTrack</h1>
     </main>
   );
 }

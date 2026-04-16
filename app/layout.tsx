@@ -13,9 +13,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* GOOGLE SEARCH CONSOLE VERIFICATION */}
+        <meta
+          name="google-site-verification"
+          content="VlskugI9oL7iR415GO-_cqk_HqfxZSzu4BklP4eWymY"
+        />
+      </head>
+
       <body>
 
-        {/* ADSENSE */}
+        {/* ADSENSE SCRIPT */}
         <Script
           id="adsense-script"
           strategy="afterInteractive"
