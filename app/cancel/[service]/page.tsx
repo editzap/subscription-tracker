@@ -1,37 +1,28 @@
-import { Metadata } from "next";
-import CancelClient from "./CancelClient";
-
-/* ✅ PRE-GENERATE POPULAR PAGES (SEO BOOST) */
-export function generateStaticParams() {
-  return [
-    { service: "netflix" },
-    { service: "spotify" },
-    { service: "youtube-premium" },
-    { service: "amazon-prime" },
-    { service: "chatgpt-plus" },
-    { service: "canva" },
-  ];
-}
-
-/* ✅ SEO METADATA (DYNAMIC FOR EVERY PAGE) */
-export async function generateMetadata({
-  params,
-}: {
-  params: { service: string };
-}): Promise<Metadata> {
-  const name = params.service.replace(/-/g, " ");
-
-  return {
-    title: `How to cancel ${name} subscription`,
-    description: `Step-by-step guide to cancel ${name}. Stop unwanted payments easily.`,
-  };
-}
-
-/* ✅ MAIN PAGE */
 export default function Page({
   params,
 }: {
   params: { service: string };
 }) {
-  return <CancelClient service={params.service} />;
+  const name = params.service.replace(/-/g, " ");
+
+  return (
+    <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
+
+      <div className="max-w-xl text-center">
+
+        <h1 className="text-3xl font-semibold mb-4">
+          Cancel {name}
+        </h1>
+
+        <div className="text-gray-400 space-y-2">
+          <p>1. Login to {name}</p>
+          <p>2. Open subscription settings</p>
+          <p>3. Click cancel</p>
+          <p>4. Confirm</p>
+        </div>
+
+      </div>
+
+    </main>
+  );
 }
