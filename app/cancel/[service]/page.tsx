@@ -1,14 +1,13 @@
 export function generateStaticParams() {
-  return [
-    { service: "netflix" },
-    { service: "spotify" },
-    { service: "youtube-premium" },
-  ];
+  return []; // allow ANY service dynamically
 }
 
 export async function generateMetadata({ params }: any) {
+  const service = params.service.replace(/-/g, " ");
+
   return {
-    title: `Cancel ${params.service}`,
+    title: `Cancel ${service}`,
+    description: `How to cancel ${service} subscription`,
   };
 }
 
