@@ -51,6 +51,7 @@ export default function HomeClient() {
           Now you see everything.
         </motion.p>
 
+        {/* BUTTONS */}
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -65,12 +66,13 @@ export default function HomeClient() {
           </a>
 
           <a
-            href="/cancel/netflix"
+            href="/cancel"
             className="border border-white/20 px-6 py-3 rounded-xl text-lg hover:bg-white/10 transition"
           >
             Explore Guides
           </a>
         </motion.div>
+
       </section>
 
       {/* FEATURES */}
@@ -83,7 +85,7 @@ export default function HomeClient() {
           },
           {
             title: "Cancel Faster",
-            desc: "Step-by-step cancel guides for every service.",
+            desc: "Find cancellation steps for any service instantly.",
           },
           {
             title: "Stay in Control",
